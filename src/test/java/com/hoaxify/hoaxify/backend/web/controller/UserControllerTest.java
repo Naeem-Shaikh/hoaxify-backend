@@ -2,6 +2,7 @@ package com.hoaxify.hoaxify.backend.web.controller;
 
 import com.hoaxify.hoaxify.backend.web.model.User;
 import com.hoaxify.hoaxify.backend.web.repository.UserRepository;
+import com.hoaxify.hoaxify.backend.web.shared.GenericeResponse;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+
+import java.util.List;
 
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,6 +46,22 @@ class UserControllerTest {
         ResponseEntity<Object> response = testRestTemplate.postForEntity(API_V_1_USERS, user, Object.class);
         assertEquals(response.getStatusCode(),HttpStatus.OK);
        // assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+    @Test
+    public void postUser_whenUserIsValid_receiveSuccessMessage(){
+        User user = createValidUser();
+        ResponseEntity<GenericeResponse> response = testRestTemplate.postForEntity(API_V_1_USERS, user, GenericeResponse.class);
+        assertNotNull(response.getBody().getMessage());
+
+    }
+    @Test
+    public void postUser_whenUserIsValid_passwordIsHashInDatabase(){
+        User user = createValidUser();
+        testRestTemplate.postForEntity("/api/v1/users",user,Object.class);
+        List<User> users = userRepository.findAll();
+        User inDb = users.get(0);
+        assertNotEquals(inDb.getUserPassword(),user.getUserPassword());
+
     }
 
     //@org.jetbrains.annotations.NotNull
