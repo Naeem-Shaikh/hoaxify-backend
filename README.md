@@ -1,2 +1,2 @@
 # HOAXIFY - BACKEND
-spring boot backend for hoaxify
+Spring Boot backend for hoaxify
